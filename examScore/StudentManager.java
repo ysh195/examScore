@@ -19,7 +19,7 @@ public class StudentManager {
 		int[][] initial_scores = new int[y_size][x_size];
 		for(int i=0; i<y_size; i++) {
 			for(int j=0; j<x_size; j++) {
-				initial_scores[i][j] = (int)(Math.random()*100);
+				initial_scores[i][j] = (int)(Math.random()*101);
 			}
 			ARRAYLIST.add(new Student(initial_names[i],initial_scores[i][0],initial_scores[i][1],initial_scores[i][2],initial_scores[i][3],initial_scores[i][4]));
 		}

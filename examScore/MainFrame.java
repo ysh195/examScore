@@ -86,9 +86,61 @@ public class MainFrame { // 학생 추가 및 삭제, 현재 데이터 리턴, �
 		all_result_Btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 여기선 어차피 다 써야 하니까 이름 비어 있는 부분은 알아서 거르게 하고, getdata로 간단하게 가자.
-				// 전체는 과목별 전체의 평균으로
-				// 그리고 기존 평균 넣던 곳에 과목별 1등과 꼴등의 이름과 점수, 그리고 전체 1등과 꼴등의 이름과 점수.
+				String[] nameList = getNameData();
+				String[] subjectList = {"국어","영어","수학","과학","사회"};
+				int[][] scoreList = getScoreData();
+				
+				boolean[] occupied = new boolean[nameList.length];
+				int count_occupied = 0;
+				for(int i=0; i<nameList.length; i++) {
+					if(nameList[i].equals("")) { // 내가 ""으로 저장했으니 아마 되겠지?
+						occupied[i] = false;
+					}
+					else {
+						occupied[i] = true;
+						count_occupied++;
+					}
+				}
+				
+				int[] avgBySub = new int[5];				
+				for(int i=0; i<nameList.length; i++) { // 일단 합계 구하기
+					if(occupied[i]) {
+						avgBySub[0] += scoreList[i][0];
+						avgBySub[1] += scoreList[i][1];
+						avgBySub[2] += scoreList[i][2];
+						avgBySub[3] += scoreList[i][3];
+						avgBySub[4] += scoreList[i][4];
+					}
+				}
+
+				for(int i=0; i<5; i++) { // 갯수로 나눠서 평균 구하기. 과목별 평균 그래프 그리는 데에 필요한 건 다 준비됨
+					avgBySub[i] = avgBySub[i]/count_occupied;
+				}
+				
+				String[] newNameList = new String[count_occupied];
+				int[] avgByName = new int[count_occupied];
+				count_occupied = 0;
+				
+				for(int i=0;i<nameList.length; i++) {
+					if(occupied[i]) {
+						newNameList[count_occupied] = nameList[i];
+						avgByName[count_occupied] = (scoreList[i][0] + scoreList[i][1] + scoreList[i][2] + scoreList[i][3] + scoreList[i][4]) / 5;
+						count_occupied++;
+					}
+				}
+				
+				CreateGragh gragh1 = new CreateGragh(subjectList, avgBySub);
+				gragh1.setScreenTitle("과목별 평균 점수");
+				gragh1.setScreenVisible();
+				
+				CreateGragh gragh2 = new CreateGragh(newNameList, avgByName);
+				gragh2.setScreenTitle("학생별 평균 점수");
+				gragh2.setScreenVisible();
+				
+				for(String s : subjectList) {
+					studentManager.MaxScoreBySubject(s); // 이게 arrayList-stream-filter로 처리하니까 동점자도 같이 나옴.
+					studentManager.MinScoreBySubject(s);
+				}
 				
 			}
 			
